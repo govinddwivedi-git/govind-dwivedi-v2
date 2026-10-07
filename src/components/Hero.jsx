@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaLinkedin } from "react-icons/fa6";
 import { MapPin } from "lucide-react";
@@ -7,10 +8,16 @@ import { assets, identity, proofPoints } from "../data/portfolio.js";
 const socialIcons = { GitHub: SiGithub, LinkedIn: FaLinkedin, X: SiX };
 
 export function Hero() {
+  const [fontsReady, setFontsReady] = useState(false);
+
+  useEffect(() => {
+    document.fonts.ready.then(() => setFontsReady(true));
+  }, []);
+
   return (
     <section id="top" className="scroll-mt-24 section-shell min-h-dvh pb-20 pt-28 sm:pt-32 lg:pb-28 lg:pt-40">
       <div className="grid items-end gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }}>
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={fontsReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }} transition={{ duration: 0.6, ease: "easeOut" }}>
           <p className="eyebrow">Software engineer / systems thinker</p>
           <h1 className="mt-6 max-w-5xl font-display text-[clamp(4.2rem,10.5vw,9.5rem)] font-semibold leading-[0.82] tracking-[-0.055em] text-balance">
             Govind

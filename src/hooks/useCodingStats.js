@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { codingProfiles } from "../data/portfolio.js";
-import { fetchCodeChef, fetchCodeforces, fetchGfg } from "../services/codingStats.js";
+import { fetchCodeChef, fetchCodeforces } from "../services/codingStats.js";
 
 const fetchers = {
   CodeChef: fetchCodeChef,
   Codeforces: fetchCodeforces,
-  GeeksForGeeks: fetchGfg,
 };
 
 const resultStore = new Map();
@@ -19,12 +18,11 @@ function buildUnavailable(profile, error) {
   };
 }
 
-function buildKnownGfg(profile, error) {
+function buildKnownGfg(profile) {
   const lastKnown = profile.lastKnown;
   return {
     platform: profile.platform,
     status: "known",
-    error: error?.message,
     headline: "4★",
     metrics: [
       { label: "Coding score", value: lastKnown.codingScore },
@@ -34,7 +32,7 @@ function buildKnownGfg(profile, error) {
       { label: "POTDs solved", value: lastKnown.potdsSolved },
     ],
     distribution: lastKnown.solvedStats,
-    meta: ["Live GFG API unavailable"],
+    meta: ["Hardcoded profile snapshot"],
     asOf: "June 2025",
   };
 }
@@ -46,7 +44,7 @@ export function useCodingStats() {
   });
 
   const fetchableProfiles = useMemo(
-    () => codingProfiles.filter((profile) => fetchers[profile.platform]),
+    () => codingProfiles,
     [],
   );
 
@@ -57,6 +55,11 @@ export function useCodingStats() {
       const entries = await Promise.all(
         fetchableProfiles.map(async (profile) => {
           const key = `${profile.platform}:${profile.username}`;
+          if (profile.platform === "GeeksForGeeks" && profile.lastKnown) {
+            const knownResult = buildKnownGfg(profile);
+            resultStore.set(key, knownResult);
+            return [profile.platform, knownResult];
+          }
           if (resultStore.has(key)) {
             return [profile.platform, resultStore.get(key)];
           }
@@ -66,10 +69,7 @@ export function useCodingStats() {
             resultStore.set(key, result);
             return [profile.platform, result];
           } catch (error) {
-            const knownResult =
-              profile.platform === "GeeksForGeeks" && profile.lastKnown
-                ? buildKnownGfg(profile, error)
-                : buildUnavailable(profile, error);
+            const knownResult = buildUnavailable(profile, error);
             resultStore.set(key, knownResult);
             return [profile.platform, knownResult];
           }

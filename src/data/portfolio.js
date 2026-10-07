@@ -289,7 +289,7 @@ export const codingProfiles = [
     username: "govinddwivedi",
     href: "https://www.geeksforgeeks.org/user/govinddwivedi/",
     endpoint: "https://geeks-for-geeks-api.vercel.app/govinddwivedi",
-    method: "Same-origin service checks the third-party API; last-known values are shown only when live data is unavailable.",
+    method: "Hardcoded profile snapshot shown because the live GFG API is unavailable.",
     accent: "#166534",
     lastKnown: {
       label: "4*",

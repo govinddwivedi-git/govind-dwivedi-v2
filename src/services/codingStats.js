@@ -76,25 +76,3 @@ export async function fetchCodeforces(username) {
     trend: ratingHistory,
   };
 }
-
-export async function fetchGfg(username) {
-  const data = await getJson(`/api/gfg?username=${encodeURIComponent(username)}`);
-  if (data?.error || !data?.info) {
-    throw new Error(data?.error || "GFG response did not include profile data.");
-  }
-
-  return {
-    platform: "GeeksForGeeks",
-    status: "live",
-    profileImage: data.info.profilePicture,
-    headline: "Live stats",
-    metrics: [
-      { label: "Solved", value: data.info.totalProblemsSolved },
-      { label: "Institute rank", value: data.info.instituteRank },
-      { label: "Current streak", value: data.info.currentStreak ? `${data.info.currentStreak} days` : null },
-      { label: "Max streak", value: data.info.maxStreak ? `${data.info.maxStreak} days` : null },
-    ].filter((metric) => metric.value !== null && metric.value !== undefined),
-    distribution: data.solvedStats,
-    meta: [data.info.fullName, data.info.institute].filter(Boolean),
-  };
-}

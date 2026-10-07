@@ -233,6 +233,10 @@ export const skillGroups = [
     skills: ["MySQL", "PostgreSQL", "MongoDB", "Firebase"],
   },
   {
+    label: "Applied AI",
+    skills: ["LangChain", "LangGraph", "LangSmith", "n8n", "RAG", "FAISS", "Vector Database", "MCP", "Agents", "Claude", "ChatGPT", "Gemini"],
+  },
+  {
     label: "Data Engineering",
     skills: ["PySpark", "Databricks", "Snowflake", "Kafka"],
   },
